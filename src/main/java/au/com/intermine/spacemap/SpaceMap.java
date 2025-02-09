@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -33,7 +34,9 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,13 +44,13 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.filechooser.FileSystemView;
 
 import au.com.intermine.spacemap.action.HideNodeAction;
@@ -90,12 +93,38 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
     public static void main(String[] args) {
 
         try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
+            // Set default font based on locale first
+            Locale locale = Locale.getDefault();
+            String fontName = "Segoe UI Light";
+            
+            // Check platform and locale for appropriate font
+            String os = System.getProperty("os.name").toLowerCase();
+            if (!os.contains("windows")) {
+                // Use system-appropriate fonts for non-Windows
+                if (os.contains("mac")) {
+                    fontName = ".AppleSystemUIFont"; // Modern macOS system font
+                } else {
+                    fontName = "DejaVu Sans Light"; // Modern Linux font
                 }
             }
+            
+            // Override for CJK languages
+            if (locale.getLanguage().matches("zh|ja|ko")) {
+                fontName = "Microsoft YaHei Light"; // Modern CJK font
+            }
+            
+            // Set the default font for all Swing components
+            Enumeration<Object> keys = UIManager.getDefaults().keys();
+            while (keys.hasMoreElements()) {
+                Object key = keys.nextElement();
+                Object value = UIManager.get(key);
+                if (value instanceof FontUIResource) {
+                    UIManager.put(key, new FontUIResource(fontName, Font.PLAIN, 12));
+                }
+            }
+
+            // Now set the Look and Feel
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e1) {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -247,7 +276,7 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
     }
 
     private JComboBox<ScanTarget> buildVolumeSelector() {
-        FileSystemView fsv = new JFileChooser().getFileSystemView();
+        FileSystemView fsv = FileSystemView.getFileSystemView();
 
         File[] roots = File.listRoots();
         List<ScanTarget> targets = new ArrayList<ScanTarget>();
