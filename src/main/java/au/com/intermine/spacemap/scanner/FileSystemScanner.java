@@ -94,8 +94,9 @@ public class FileSystemScanner {
 
 		if (folder.getParentFile() == null) {
 			// this is a root node
-			parent.addChild("Free space", folder.getFreeSpace(), NodeType.FreeSpace, -1);
-
+			if (au.com.intermine.spacemap.action.ToggleFreeSpaceAction.isShowingFreeSpace()) {
+				parent.addChild("Free space", folder.getFreeSpace(), NodeType.FreeSpace, -1);
+			}
 		}
 
 		notifyOnFolder(folder, parent);
@@ -164,4 +165,3 @@ public class FileSystemScanner {
 	}
 
 }
-

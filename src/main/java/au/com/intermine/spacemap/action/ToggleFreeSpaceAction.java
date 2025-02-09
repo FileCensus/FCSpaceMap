@@ -39,7 +39,7 @@ public class ToggleFreeSpaceAction extends SpaceMapNodeActionAdapter {
 
 	private static HiddenNodeSet _hiddenNodes = new HiddenNodeSet();
 
-	private static boolean _showFreeSpace = true;
+	private static boolean _showFreeSpace = false;
 	
 	public ToggleFreeSpaceAction() {
 		super("hide_free_space.png");
@@ -47,6 +47,10 @@ public class ToggleFreeSpaceAction extends SpaceMapNodeActionAdapter {
 
 	public String getLabel() {
 		return (_showFreeSpace ? "Hide free space" : "Show Free Space");
+	}
+
+	public static boolean isShowingFreeSpace() {
+		return _showFreeSpace;
 	}
 
 	public void performAction(TreeNode node, File file) {
