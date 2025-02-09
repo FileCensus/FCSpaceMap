@@ -314,16 +314,16 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
 
     private JComponent createToolbar() {
         final JPanel toolbar = new JPanel(new BorderLayout());
+        final JPanel basic = new JPanel(new BorderLayout(0, 0)); 
+        final JPanel scancontrols = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 1));
 
-        final JPanel basic = new JPanel(new BorderLayout());
-        final JPanel scancontrols = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
-
+        // Volume selector
         final JComboBox<ScanTarget> volumes = buildVolumeSelector();
         scancontrols.add(volumes);
 
+        // Start button
         _startButton = new JButton("Start");
         _startButton.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 if (_scanningEngine != null && _scanningEngine.isRunning()) {
                     statusMsg("Cancelling...");
@@ -334,27 +334,35 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
                     _visualisation.setModel(_rootModel);
                 }
             }
-
         });
-
         scancontrols.add(_startButton);
 
-        JButton restoreButton = new JButton("restore");
-
+        // Right controls panel
+        JPanel rightControls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 1, 1));
+        
+        // Unhide button
+        JButton restoreButton = new JButton("Unhide");
+        restoreButton.setEnabled(false);
         restoreButton.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 HideNodeAction.restoreHiddenNodes();
+                restoreButton.setEnabled(false);
             }
-
         });
+        HideNodeAction.setUnhideButton(restoreButton);
+        rightControls.add(restoreButton);
 
-        scancontrols.add(restoreButton);
+        // Layout
         basic.add(scancontrols, BorderLayout.WEST);
         _filterPanel = new FilterPanel();
-        basic.add(_filterPanel, BorderLayout.EAST);
-
-        _filterPanel.setEnabled(false);
+        
+        // Wrap filter panel in a centered container
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        centerPanel.setOpaque(false);
+        centerPanel.add(_filterPanel);
+        basic.add(centerPanel, BorderLayout.CENTER);
+        
+        basic.add(rightControls, BorderLayout.EAST);
         toolbar.add(basic, BorderLayout.NORTH);
 
         return toolbar;

@@ -28,6 +28,11 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
@@ -44,6 +49,46 @@ public class CollectionFilterDescriptor implements IFilterDescriptor {
 
 	public CollectionFilterDescriptor() {
 		_collections = new JComboBox();
+		_collections.setMaximumRowCount(20);
+
+		// Add mouse motion listener to show extensions in status bar
+		_collections.addPopupMenuListener(new PopupMenuListener() {
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				javax.swing.JComboBox box = (javax.swing.JComboBox)_collections;
+				Object comp = box.getUI().getAccessibleChild(box, 0);
+				if (comp instanceof javax.swing.JPopupMenu) {
+					javax.swing.JPopupMenu popup = (javax.swing.JPopupMenu)comp;
+					javax.swing.JScrollPane scrollPane = (javax.swing.JScrollPane)popup.getComponent(0);
+					java.awt.event.MouseMotionListener[] listeners = scrollPane.getViewport().getView().getMouseMotionListeners();
+					for (java.awt.event.MouseMotionListener l : listeners) {
+						scrollPane.getViewport().getView().removeMouseMotionListener(l);
+					}
+					scrollPane.getViewport().getView().addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+						@Override
+						public void mouseMoved(java.awt.event.MouseEvent evt) {
+							javax.swing.JList list = (javax.swing.JList)evt.getSource();
+							int index = list.locationToIndex(evt.getPoint());
+							if (index >= 0) {
+								CollectionItems item = (CollectionItems)list.getModel().getElementAt(index);
+								SpaceMap.statusMsg("File types: " + Utils.join(item.getExtensions(), ", "));
+							}
+						}
+					});
+				}
+			}
+
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				SpaceMap.statusMsg(""); // Clear status when popup closes
+			}
+
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e) {
+				SpaceMap.statusMsg(""); // Clear status when popup is canceled
+			}
+		});
+
 		RhinoScript rh = SpaceMap.getUserScript();
 		if (rh != null) {
 			NativeObject obj = rh.getGlobal("Collections");

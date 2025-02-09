@@ -52,15 +52,22 @@ public class FilterPanel extends JPanel {
 	private JPanel _argspanel;
 
 	public FilterPanel() {
-		super(new FlowLayout(FlowLayout.RIGHT, 2, 2));
+		super(new FlowLayout(FlowLayout.CENTER, 1, 1));
 		this.setOpaque(false);
-		add(new JLabel("Filter"));
+		this.setBorder(null);
+		
+		JLabel filterLabel = new JLabel("Filter");
+		add(filterLabel);
+		
 		_filters = new JComboBox<IFilterDescriptor>();
+		_filters.setMaximumRowCount(20);
+		add(_filters);
 
 		_argspanel = new JPanel();
-		_argspanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		_argspanel.setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
 		_argspanel.setOpaque(false);
-		_argspanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+		_argspanel.setBorder(null);
+		add(_argspanel);
 
 		_filters.addItemListener(new ItemListener() {
 
@@ -107,14 +114,12 @@ public class FilterPanel extends JPanel {
 		model.addElement(new RegularExpressionFilterDescriptor());
 		model.addElement(new DuplicateFilesFilterDescriptor());
 		_filters.setModel(model);
-		add(_filters);
-
+		
 		IFilterDescriptor filterdesc = (IFilterDescriptor) _filters.getSelectedItem();
 		JComponent comp = filterdesc.getArgumentsComponent();
 		if (comp != null) {
 			_argspanel.add(filterdesc.getArgumentsComponent());
 		}
-		add(_argspanel);
 	}
 
 	public IFilterDescriptor getSelectedItem() {
