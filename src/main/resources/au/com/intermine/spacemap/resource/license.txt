@@ -1,0 +1,5 @@
+SNSpaceMap License Text
+-----------------------
+
+This program is currently experimental! Use at your own risk!
+
