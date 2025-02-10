@@ -1,5 +1,4 @@
 /*
- *
  * FCSpaceMap
  *
  * Copyright (C) 1997-2025  Intermine Pty Ltd. All rights reserved.
