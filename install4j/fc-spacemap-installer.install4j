@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="9.0.7" transformSequenceNumber="9">
-  <directoryPresets config="../../fc-spacemap-installer/target" />
+  <directoryPresets config="../../target/FCSpaceMap-with-dependencies.jar" />
   <application name="FileCensus Space Map" applicationId="8442-5034-5290-9044" mediaDir="../target" shortName="FCSpaceMap" publisher="FileCensus" publisherWeb="https://www.filecensus.com/" version="1.0" allPathsRelative="true" macVolumeId="b4daebd4e7530d29">
     <jreBundles jdkProviderId="Zulu" release="8/8u442" />
   </application>
@@ -9,7 +9,7 @@
       <mountPoint id="24" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="24" file="../target/FCSpaceMap-1.0.0-jar-with-dependencies.jar" />
+      <fileEntry mountPoint="24" file="../target/FCSpaceMap-with-dependencies.jar" />
     </entries>
   </files>
   <launchers>
@@ -22,7 +22,7 @@
       </splashScreen>
       <java mainClass="au.com.intermine.spacemap.SpaceMap">
         <classPath>
-          <archive location="FCSpaceMap-1.0.0-jar-with-dependencies.jar" failOnError="false" />
+          <archive location="FCSpaceMap-with-dependencies.jar" failOnError="false" />
         </classPath>
       </java>
       <vmOptionsFile mode="none" />

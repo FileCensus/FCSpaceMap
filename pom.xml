@@ -29,6 +29,13 @@
     <artifactId>FCSpaceMap</artifactId>
     <version>1.1.0</version>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>ej-technologies</id>
+            <url>https://maven.ej-technologies.com/repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <dependencies>
         <dependency>
             <groupId>javax.mail</groupId>
@@ -76,6 +83,8 @@
                             <mainClass>au.com.intermine.spacemap.SpaceMap</mainClass>
                         </manifest>
                     </archive>
+                    <finalName>FCSpaceMap-with-dependencies</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
                     <execution>
@@ -84,6 +93,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.install4j</groupId>
+                <artifactId>install4j-maven</artifactId>
+                <version>9.0.7</version>
+                <executions>
+                    <execution>
+                        <id>compile-installers</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <projectFile>${project.basedir}/install4j/fc-spacemap-installer.install4j</projectFile>
+                            <installDir>C:\Program Files\install4j9</installDir>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
