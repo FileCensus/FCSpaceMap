@@ -58,7 +58,7 @@ public class HideNodeAction extends SpaceMapNodeActionAdapter {
 	}
 
 	/**
-	 * This method will go through each node in the the hidden list, and if a hidden node used to belong to the supplied root node (i.e. its ancestry includes the root nodes ancestry), then it is removed from the hidden list.
+	 * This method will go through each node in the hidden list, and if a hidden node used to belong to the supplied root node (i.e. its ancestry includes the root nodes ancestry), then it is removed from the hidden list.
 	 * 
 	 * @param rootnode
 	 */
@@ -68,4 +68,9 @@ public class HideNodeAction extends SpaceMapNodeActionAdapter {
 			_unhideButton.setEnabled(!_hiddenNodes.getHiddenNodes().isEmpty());
 		}
 	}
+
+	public static void reset() {
+		_hiddenNodes.reset();
+	}
+
 }

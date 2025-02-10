@@ -76,7 +76,7 @@ public class SplitBySlice extends SplitStrategy {
     }
 
     @Override
-    protected void calculatePositionsRec(int x0, int y0, int w0, int h0, long weight0, List<TreeNode> v) {
+    protected void calculatePositionsRec(int x0, int y0, int w0, int h0, long weight0, List<TreeNode> v, int recurseDepth) {
 
         SplitBySlice.splitInSlice(x0, y0, w0, h0, v, weight0);
         for (TreeNode node : v) {
@@ -87,7 +87,7 @@ public class SplitBySlice extends SplitStrategy {
             } else {
                 // if this is not a leaf, calculation for the children
                 Insets insets = TreeMapRectangle.getInsets();
-                calculatePositionsRec(rect.getX() + insets.left, rect.getY() + insets.top, rect.getWidth() - insets.left - insets.right, rect.getHeight() - insets.top - insets.bottom, node.getWeight(), node.getChildren());
+                calculatePositionsRec(rect.getX() + insets.left, rect.getY() + insets.top, rect.getWidth() - insets.left - insets.right, rect.getHeight() - insets.top - insets.bottom, node.getWeight(), node.getChildren(), recurseDepth + 1);
             }
         }
     }

@@ -36,7 +36,6 @@ import au.com.intermine.spacemap.model.TreeNode;
 import au.com.intermine.spacemap.navigator.Navigator;
 import au.com.intermine.spacemap.navigator.NavigatorItem;
 import au.com.intermine.spacemap.navigator.NavigatorItemClickedListener;
-import au.com.intermine.spacemap.util.ResourceManager;
 
 public class Visualisation extends JPanel {
 
@@ -133,21 +132,3 @@ public class Visualisation extends JPanel {
 
 }
 
-class TreeMapNavigatorItem extends NavigatorItem {
-
-    private static final long serialVersionUID = 1L;
-
-    private TreeNode _item;
-
-    public TreeMapNavigatorItem(TreeNode item) {
-        super(item.getLabel());
-        _item = item;
-        if (item.getParent() == null) {
-            setIcon(ResourceManager.getIcon("home.png"));
-        }
-    }
-
-    public TreeNode getNode() {
-        return _item;
-    }
-}

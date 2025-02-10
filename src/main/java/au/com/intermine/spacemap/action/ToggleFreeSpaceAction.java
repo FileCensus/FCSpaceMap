@@ -53,21 +53,29 @@ public class ToggleFreeSpaceAction extends SpaceMapNodeActionAdapter {
 		return _showFreeSpace;
 	}
 
+	public static void hideFreeSpaceNode(TreeNode node) {
+		TreeNode model = SpaceMap.getInstance().getRootModel();
+		TreeNodeTypeHarvester v = new TreeNodeTypeHarvester(NodeType.FreeSpace);
+		model.traverseLeafNodes(v);
+		for (TreeNode n : v.getNodes()) {
+			_hiddenNodes.hideNode(n);
+		}
+	}
+
 	public void performAction(TreeNode node, File file) {
 		if (_showFreeSpace) {
 			// We are already showing the free space nodes, so now we hide them...
-			TreeNode model = SpaceMap.getInstance().getRootModel();
-			TreeNodeTypeHarvester v = new TreeNodeTypeHarvester(NodeType.FreeSpace);
-			model.traverseLeafNodes(v);
-			for (TreeNode n : v.getNodes()) {
-				_hiddenNodes.hideNode(n);
-			}
+			hideFreeSpaceNode(node);
 		} else {
 			_hiddenNodes.restoreHiddenNodes();
 		}
 		SpaceMap.getVisualisation().getWidget().repaint();
 
 		_showFreeSpace = !_showFreeSpace;
+	}
+
+	public static void reset() {
+		_hiddenNodes.reset();
 	}
 
 }

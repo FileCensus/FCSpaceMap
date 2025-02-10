@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.com.intermine.spacemap.IAsyncCallback;
+import au.com.intermine.spacemap.action.HideNodeAction;
+import au.com.intermine.spacemap.action.ToggleFreeSpaceAction;
 import au.com.intermine.spacemap.model.NodeType;
 import au.com.intermine.spacemap.model.TreeNode;
 import au.com.intermine.spacemap.scanner.filter.IFileFilter;
@@ -153,6 +155,11 @@ class ScanningEngineThread extends Thread {
 		_callback = callback;
 		_tasks = new ArrayList<ScanningTask>();
 		_rootNodes = new ArrayList<TreeNode>();
+
+		// TODO: Rethink how hidden nodes state is stored. Currently it is stored as static members in these two action classes
+		ToggleFreeSpaceAction.reset();
+		HideNodeAction.reset();
+
 		for (String root : engine.getRoots()) {
 			FileSystemScanner scanner = new FileSystemScanner(root, _filter);
 			

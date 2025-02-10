@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.com.intermine.spacemap.action.ToggleFreeSpaceAction;
 import au.com.intermine.spacemap.model.NodeType;
 import au.com.intermine.spacemap.model.TreeNode;
 import au.com.intermine.spacemap.scanner.filter.IFileFilter;
@@ -94,8 +95,9 @@ public class FileSystemScanner {
 
 		if (folder.getParentFile() == null) {
 			// this is a root node
-			if (au.com.intermine.spacemap.action.ToggleFreeSpaceAction.isShowingFreeSpace()) {
-				parent.addChild("Free space", folder.getFreeSpace(), NodeType.FreeSpace, -1);
+			TreeNode freeSpaceNode = parent.addChild("Free space", folder.getFreeSpace(), NodeType.FreeSpace, -1);
+			if (!ToggleFreeSpaceAction.isShowingFreeSpace()) {
+				ToggleFreeSpaceAction.hideFreeSpaceNode(freeSpaceNode);
 			}
 		}
 

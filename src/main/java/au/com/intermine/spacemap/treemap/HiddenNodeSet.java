@@ -56,7 +56,7 @@ public class HiddenNodeSet {
 	}
 
 	/**
-	 * This method will go through each node in the the hidden list, and if a hidden node used to belong to the supplied root node (i.e. its ancestry includes the root nodes ancestry), then it is removed from the hidden list.
+	 * This method will go through each node in the hidden list, and if a hidden node used to belong to the supplied root node (i.e. its ancestry includes the root nodes ancestry), then it is removed from the hidden list.
 	 * 
 	 * @param rootnode
 	 */
@@ -89,6 +89,10 @@ public class HiddenNodeSet {
 				_hiddenNodes.remove(node);
 			}
 		}
+	}
+
+	public void reset() {
+		_hiddenNodes.clear();
 	}
 
 }

@@ -35,6 +35,8 @@ import au.com.intermine.spacemap.treemap.TreeMapRectangle;
 
 public class SplitSquarified extends SplitStrategy {
 
+    public static final int MAX_RECURSE_DEPTH = 1000;
+
     private int _w1, _h1;
 
     private int _x, _y, _w, _h;
@@ -105,8 +107,8 @@ public class SplitSquarified extends SplitStrategy {
      * @see au.come.intermine.treemap.SplitStrategy#calculatePositionsRec(int, int, int, int, double, java.util.Vector)
      */
     @Override
-    protected void calculatePositionsRec(int x0, int y0, int w0, int h0, long weight0, List<TreeNode> v) {
-        if (w0 >= 1 && h0 >= 1) {
+    protected void calculatePositionsRec(int x0, int y0, int w0, int h0, long weight0, List<TreeNode> v, int recurseDepth) {
+        if (w0 >= 1 && h0 >= 1 && recurseDepth < MAX_RECURSE_DEPTH) {
             List<TreeNode> vClone = new ArrayList<TreeNode>(v);
             sortVector(vClone);
             if (vClone.size() <= 2) {
@@ -127,7 +129,7 @@ public class SplitSquarified extends SplitStrategy {
                 int h2 = _h2;
                 SplitBySlice.splitInSlice(x0, y0, _w1, _h1, v1, sumWeight(v1));
                 calculateChildren(v1);
-                calculatePositionsRec(x2, y2, w2, h2, sumWeight(v2), v2);
+                calculatePositionsRec(x2, y2, w2, h2, sumWeight(v2), v2, recurseDepth + 1);
             }
         } else {
             // need to zero out any existing regions...
@@ -178,7 +180,7 @@ public class SplitSquarified extends SplitStrategy {
                 }
 
                 Insets insets = TreeMapRectangle.getInsets();
-                calculatePositionsRec(rect.getX() + insets.left, rect.getY() + insets.top, w - insets.left - insets.right, h - insets.top - insets.bottom, node.getWeight(), node.getChildren());
+                calculatePositionsRec(rect.getX() + insets.left, rect.getY() + insets.top, w - insets.left - insets.right, h - insets.top - insets.bottom, node.getWeight(), node.getChildren(), 0);
             }
 
         }

@@ -955,7 +955,7 @@ public class TreeMapWidget extends JPanel implements Printable, ImageSource {
 			} else {
 				g.setColor(renderStrategy.getBranchTitleTextColor(node));
 				String lbl = renderStrategy.renderBranchTitle(node, node == getDisplayedRoot());
-				int yoffset = 2;
+				int yoffset = 0;
 				Rectangle lblrect = DrawingUtils.drawString(g, labelFont, lbl, x + 4, y + yoffset, width - 7, titleheight, DrawingUtils.TEXT_ALIGN_LEFT);
 				int lblwidth = lblrect.width;
 				if (lblwidth > 0 || lbl.equals("")) {

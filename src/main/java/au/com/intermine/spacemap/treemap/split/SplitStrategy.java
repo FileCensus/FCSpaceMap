@@ -42,7 +42,7 @@ public abstract class SplitStrategy {
         Insets insets = TreeMapRectangle.getInsets();
         if (v != null) {
             TreeMapRectangle rect = (TreeMapRectangle) root.getRectangle();
-            calculatePositionsRec(rect.getX() + insets.left, rect.getY() + insets.top, rect.getWidth() - insets.left - insets.right, rect.getHeight() - insets.top - insets.bottom, sumWeight(v), v);
+            calculatePositionsRec(rect.getX() + insets.left, rect.getY() + insets.top, rect.getWidth() - insets.left - insets.right, rect.getHeight() - insets.top - insets.bottom, sumWeight(v), v, 0);
         }
     }
 
@@ -58,7 +58,7 @@ public abstract class SplitStrategy {
         return d;
     }
 
-    protected void calculatePositionsRec(int x0, int y0, int w0, int h0, long weight0, List<TreeNode> v) {
+    protected void calculatePositionsRec(int x0, int y0, int w0, int h0, long weight0, List<TreeNode> v, int recurseDepth) {
 
         // if the Vector contains only one element
         if (v.size() == 1) {
@@ -70,7 +70,7 @@ public abstract class SplitStrategy {
                 // if this is not a leaf, calculation for the children
                 rect.setDimension(x0, y0, w0, h0);
                 Insets insets = TreeMapRectangle.getInsets();
-                calculatePositionsRec(x0 + insets.left, y0 + insets.top, w0 - insets.left - insets.right, h0 - insets.top - insets.bottom, weight0, f.getChildren());
+                calculatePositionsRec(x0 + insets.left, y0 + insets.top, w0 - insets.left - insets.right, h0 - insets.top - insets.bottom, weight0, f.getChildren(), recurseDepth + 1);
             }
         } else {
             // if there is more than one element
@@ -103,8 +103,8 @@ public abstract class SplitStrategy {
                 y2 = y0 + h1;
             }
             // calculation for the new two Vectors
-            calculatePositionsRec(x0, y0, w1, h1, weight1, v1);
-            calculatePositionsRec(x2, y2, w2, h2, weight2, v2);
+            calculatePositionsRec(x0, y0, w1, h1, weight1, v1, recurseDepth + 1);
+            calculatePositionsRec(x2, y2, w2, h2, weight2, v2, recurseDepth + 1);
         }
     }
 
