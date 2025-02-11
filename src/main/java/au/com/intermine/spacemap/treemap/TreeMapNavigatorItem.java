@@ -25,6 +25,8 @@ import au.com.intermine.spacemap.model.TreeNode;
 import au.com.intermine.spacemap.navigator.NavigatorItem;
 import au.com.intermine.spacemap.util.ResourceManager;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.Serializable;
 
 class TreeMapNavigatorItem extends NavigatorItem implements Serializable {
@@ -37,7 +39,9 @@ class TreeMapNavigatorItem extends NavigatorItem implements Serializable {
         super(item.getLabel());
         _item = item;
         if (item.getParent() == null) {
-            setIcon(ResourceManager.getIcon("home.png"));
+            ImageIcon icon = ResourceManager.getIcon("home128.png");
+            icon.setImage(icon.getImage());
+            setIcon(icon);
         }
     }
 

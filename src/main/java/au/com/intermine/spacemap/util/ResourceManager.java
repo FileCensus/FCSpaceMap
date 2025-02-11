@@ -21,9 +21,14 @@
 
 package au.com.intermine.spacemap.util;
 
+import java.awt.*;
+import java.awt.image.BaseMultiResolutionImage;
+import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import au.com.intermine.spacemap.exception.SystemFatalException;
@@ -37,13 +42,19 @@ public class ResourceManager {
 	}
 
 	public static synchronized ImageIcon getIcon(String name) {
-		String path = String.format("au/com/intermine/spacemap/resource/%s", name);
+		String path = String.format("/au/com/intermine/spacemap/resource/%s", name);
 		if (_IconCache.containsKey(path)) {
 			return _IconCache.get(path);
 		}
 		try {
-			URL url = ResourceManager.class.getClassLoader().getResource(path);
-			ImageIcon result = new ImageIcon(url);
+			URL url = ResourceManager.class.getResource(path);
+			Image image = ImageIO.read(url);
+			Image[] scaledImages = Arrays.stream(new int[] { 14, 16, 18, 20, 24, 32, 64, 128 }).mapToObj((int size) -> {
+				return image.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+			}).toArray(Image[]::new);
+
+
+			ImageIcon result = new ImageIcon(new BaseMultiResolutionImage(scaledImages));
 			_IconCache.put(path, result);
 			return result;
 		} catch (Exception ex) {
