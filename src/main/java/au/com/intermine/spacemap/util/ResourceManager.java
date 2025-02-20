@@ -22,7 +22,6 @@
 package au.com.intermine.spacemap.util;
 
 import java.awt.*;
-import java.awt.image.BaseMultiResolutionImage;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Arrays;
@@ -36,6 +35,7 @@ import au.com.intermine.spacemap.exception.SystemFatalException;
 public class ResourceManager {
 	
 	private static HashMap<String, ImageIcon> _IconCache;
+	private static final int[] ICON_SIZES = { 14, 16, 18, 20, 24, 32, 64, 128 };
 	
 	static {
 		_IconCache = new HashMap<String, ImageIcon>();
@@ -52,16 +52,32 @@ public class ResourceManager {
 				System.err.println("Warning: Resource not found: " + path);
 				return null;
 			}
-			Image image = ImageIO.read(url);
+			BufferedImage image = ImageIO.read(url);
 			if (image == null) {
 				System.err.println("Warning: Failed to read image: " + path);
 				return null;
 			}
-			Image[] scaledImages = Arrays.stream(new int[] { 14, 16, 18, 20, 24, 32, 64, 128 }).mapToObj((int size) -> {
-				return image.getScaledInstance(size, size, Image.SCALE_SMOOTH);
-			}).toArray(Image[]::new);
 
-			ImageIcon result = new ImageIcon(new BaseMultiResolutionImage(scaledImages));
+			// Get the system scale factor (1.0 for standard displays, 2.0 for HiDPI/Retina)
+			double scaleFactor = Toolkit.getDefaultToolkit().getScreenResolution() / 96.0;
+			
+			// Choose the appropriate size based on scale factor
+			int baseSize = 16; // Default icon size
+			int targetSize = (int) Math.round(baseSize * scaleFactor);
+			
+			// Find the best matching size from our predefined sizes
+			int bestSize = ICON_SIZES[0];
+			for (int size : ICON_SIZES) {
+				if (size >= targetSize) {
+					bestSize = size;
+					break;
+				}
+			}
+			
+			// Create a scaled version of the image
+			Image scaledImage = image.getScaledInstance(bestSize, bestSize, Image.SCALE_SMOOTH);
+			
+			ImageIcon result = new ImageIcon(scaledImage);
 			_IconCache.put(path, result);
 			return result;
 		} catch (Exception ex) {

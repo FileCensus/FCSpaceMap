@@ -476,7 +476,9 @@ return console.askYesNo(message, true);
     <unixInstaller name="Unix Installer" id="36" />
     <linuxDeb name="Linux Deb Archive" id="37" />
     <windowsArchive name="Windows Archive" id="38" />
-    <windows name="Windows 32bit" id="39" jreBitType="32" />
+    <windows name="Windows 32bit" id="39" jreBitType="32">
+      <jreBundle jdkProviderId="Zulu" release="8/8u442" overrideJdkRelease="true" />
+    </windows>
     <linuxRPM name="Linux RPM" id="41" />
   </mediaSets>
 </install4j>

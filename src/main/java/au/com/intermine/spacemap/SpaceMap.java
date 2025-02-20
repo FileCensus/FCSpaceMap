@@ -47,9 +47,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatDarculaLaf;
 
 import au.com.intermine.spacemap.action.HideNodeAction;
 import au.com.intermine.spacemap.model.TreeNode;
@@ -104,23 +104,17 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
             boolean isDarkTheme = isSystemDarkTheme();
             if (isDarkTheme) {
                 try {
-                    if (!FlatDraculaIJTheme.setup()) {
-                        // Fallback to basic dark theme if Dracula fails
-                        FlatMacDarkLaf.setup();
-                    }
+                    FlatDarculaLaf.install();
                 } catch (Exception e) {
-                    // Final fallback if both dark themes fail
-                    FlatLaf.setup(new FlatMacDarkLaf());
+                    // Fallback to basic dark theme
+                    FlatDarkLaf.install();
                 }
             } else {
                 try {
-                    if (!FlatLightFlatIJTheme.setup()) {
-                        // Fallback to basic light theme if JetBrains theme fails
-                        FlatLightLaf.setup();
-                    }
+                    FlatLightLaf.install();
                 } catch (Exception e) {
-                    // Final fallback if both light themes fail
-                    FlatLaf.setup(new FlatLightLaf());
+                    // Final fallback to system look and feel
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
             }
 
