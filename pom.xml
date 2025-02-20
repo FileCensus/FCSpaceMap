@@ -27,7 +27,7 @@
 
     <groupId>au.com.intermine</groupId>
     <artifactId>FCSpaceMap</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.3</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -36,9 +36,22 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
+        <maven.build.timestamp.format>yyyy/MM/dd HH:mm</maven.build.timestamp.format>
+        <project.version.major>1</project.version.major>
+        <project.version.minor>2</project.version.minor>
+        <project.version.revision>3</project.version.revision>
+        <project.version.buildnumber>1</project.version.buildnumber>
+        <project.version>${project.version.major}.${project.version.minor}.${project.version.revision}.${project.version.buildnumber}</project.version>
     </properties>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

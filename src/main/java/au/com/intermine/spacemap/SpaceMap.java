@@ -46,6 +46,7 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
@@ -102,14 +103,24 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
             // Detect and apply theme before creating any UI components
             boolean isDarkTheme = isSystemDarkTheme();
             if (isDarkTheme) {
-                if (!FlatDraculaIJTheme.setup()) {
-                    // Fallback to basic dark theme if Dracula fails
-                    FlatMacDarkLaf.setup();
+                try {
+                    if (!FlatDraculaIJTheme.setup()) {
+                        // Fallback to basic dark theme if Dracula fails
+                        FlatMacDarkLaf.setup();
+                    }
+                } catch (Exception e) {
+                    // Final fallback if both dark themes fail
+                    FlatLaf.setup(new FlatMacDarkLaf());
                 }
             } else {
-                if (!FlatLightFlatIJTheme.setup()) {
-                    // Fallback to basic light theme if JetBrains theme fails
-                    FlatLightFlatIJTheme.setup();
+                try {
+                    if (!FlatLightFlatIJTheme.setup()) {
+                        // Fallback to basic light theme if JetBrains theme fails
+                        FlatLightLaf.setup();
+                    }
+                } catch (Exception e) {
+                    // Final fallback if both light themes fail
+                    FlatLaf.setup(new FlatLightLaf());
                 }
             }
 

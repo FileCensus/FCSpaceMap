@@ -149,6 +149,9 @@ public class TreeMapWidget extends JPanel implements Printable, ImageSource {
 
 	private String _busyMessage = "";
 
+	private int _repaintCounter = 0;
+	private static final int REPAINT_THRESHOLD = 10;
+
 	/**
 	 * ctor
 	 */
@@ -745,6 +748,13 @@ public class TreeMapWidget extends JPanel implements Printable, ImageSource {
 
 		try {
 			boolean repaint = false;
+			
+			// Check if we've hit the repaint threshold
+			if (_repaintCounter >= REPAINT_THRESHOLD) {
+				repaint = true;
+				_repaintCounter = 0;
+			}
+			
 			if (_bufferedImage == null || _bufferedImage.getKey() != getDisplayedRoot()) {
 				repaint = true;
 			} else {
@@ -769,15 +779,19 @@ public class TreeMapWidget extends JPanel implements Printable, ImageSource {
 				}
 			}
 
-			// the last test -
+			// Check if scan completed (node count changed)
 			if (!repaint && getDisplayedRoot() != null) {
 				long currentchildcount = getDisplayedRoot().countAllChildNodes();
 				if (currentchildcount != _lastnodecount) {
 					repaint = true;
 					_lastnodecount = currentchildcount;
+					// Reset counter since we're doing a repaint
+					_repaintCounter = 0;
 				}
 			}
-
+			
+			_repaintCounter++;
+			
 			if (repaint) {
 				VolatileImage img = createVolatileImage(width, height);
 				drawVisualisation(img.getGraphics(), width, height, 10);

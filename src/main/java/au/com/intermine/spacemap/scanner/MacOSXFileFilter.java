@@ -24,7 +24,9 @@ package au.com.intermine.spacemap.scanner;
 public class MacOSXFileFilter extends IgnoreListFileFilter {
 
     static {
-        _ignoreList.add("/Volumes");
+        // System volumes and mount points
+        _ignoreList.add("/Volumes");     // External volumes
+        _ignoreList.add("/dev");         // Device files
     }
 
 }

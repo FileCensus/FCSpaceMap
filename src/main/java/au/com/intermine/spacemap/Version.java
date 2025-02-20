@@ -61,6 +61,7 @@ public final class Version {
 		_placeholders.put('r', get("build.revision"));
 		_placeholders.put('b', get("build.number"));
 		_placeholders.put('d', get("build.date"));
+		_placeholders.put('v', get("version.full"));
 	}
 
 	private static String get(String name) {
@@ -113,7 +114,13 @@ public final class Version {
 	 * @return a full version string
 	 */
 	public static String getFullVersion() {
-		return format("%n %M.%m.%r (%b)");
+		// First try to get the full version from properties
+		String fullVersion = get("version.full");
+		if (fullVersion != null && !fullVersion.trim().isEmpty()) {
+			return format("%n %v");
+		}
+		// Fall back to old format if full version not available
+		return format("%n %M.%m.%r.%b");
 	}
 
 	/**

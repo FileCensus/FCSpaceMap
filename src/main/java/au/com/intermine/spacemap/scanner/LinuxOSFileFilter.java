@@ -24,8 +24,13 @@ package au.com.intermine.spacemap.scanner;
 public class LinuxOSFileFilter extends IgnoreListFileFilter {
 
     static {
-        _ignoreList.add("/dev");
-        _ignoreList.add("/proc");
+        // System directories
+        _ignoreList.add("/dev");       // Device files
+        _ignoreList.add("/proc");      // Process information
+        
+        // Mount points and temporary storage
+        _ignoreList.add("/mnt");       // Mount point for filesystems
+        _ignoreList.add("/media");     // Removable media
     }
 
 }

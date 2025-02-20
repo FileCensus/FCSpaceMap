@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="9.0.7" transformSequenceNumber="9">
   <directoryPresets config="../../target/FCSpaceMap-with-dependencies.jar" />
-  <application name="FileCensus Space Map" applicationId="8442-5034-5290-9044" mediaDir="../target/media" shortName="FCSpaceMap" publisher="FileCensus" publisherWeb="https://www.filecensus.com/" version="1.2.0" allPathsRelative="true" macVolumeId="b4daebd4e7530d29">
+  <application name="FileCensus Space Map" applicationId="8442-5034-5290-9044" mediaDir="../target/media" shortName="FCSpaceMap" publisher="Intermine Pty Ltd" publisherWeb="https://www.filecensus.com/" version="1.2.3" allPathsRelative="true" macVolumeId="b4daebd4e7530d29">
     <jreBundles jdkProviderId="Zulu" release="21/21.0.6" />
   </application>
   <files>
@@ -469,8 +469,14 @@ return console.askYesNo(message, true);
     </styles>
   </installerGui>
   <mediaSets>
-    <windows name="Windows" id="27">
+    <windows name="Windows 64bit" id="27">
       <jreBundle manualJreEntry="true" />
     </windows>
+    <macosFolder name="macOS Folder" id="35" architecture="universal" />
+    <unixInstaller name="Unix Installer" id="36" />
+    <linuxDeb name="Linux Deb Archive" id="37" />
+    <windowsArchive name="Windows Archive" id="38" />
+    <windows name="Windows 32bit" id="39" jreBitType="32" />
+    <linuxRPM name="Linux RPM" id="41" />
   </mediaSets>
 </install4j>
