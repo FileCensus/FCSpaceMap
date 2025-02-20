@@ -39,9 +39,11 @@ class TreeMapNavigatorItem extends NavigatorItem implements Serializable {
         super(item.getLabel());
         _item = item;
         if (item.getParent() == null) {
-            ImageIcon icon = ResourceManager.getIcon("home128.png");
-            icon.setImage(icon.getImage());
-            setIcon(icon);
+            ImageIcon icon = ResourceManager.getIcon("home.png");
+            if (icon != null) {
+                icon.setImage(icon.getImage());
+                setIcon(icon);
+            }
         }
     }
 

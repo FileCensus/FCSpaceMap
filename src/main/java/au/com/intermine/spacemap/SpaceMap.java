@@ -39,18 +39,16 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
 
 import au.com.intermine.spacemap.action.HideNodeAction;
 import au.com.intermine.spacemap.model.TreeNode;
@@ -95,52 +93,42 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
             // Set default font based on locale first
             Locale locale = Locale.getDefault();
             String fontName = "Segoe UI Light";
-            
-            // Check platform and locale for appropriate font
-            String os = System.getProperty("os.name").toLowerCase();
-            if (!os.contains("windows")) {
-                // Use system-appropriate fonts for non-Windows
-                if (os.contains("mac")) {
-                    fontName = ".AppleSystemUIFont"; // Modern macOS system font
-                } else {
-                    fontName = "DejaVu Sans Light"; // Modern Linux font
+            if (locale.getLanguage().equals("ja")) {
+                fontName = "Yu Gothic Light";
+            }
+            Font defaultFont = new Font(fontName, Font.PLAIN, 12);
+            UIManager.put("defaultFont", defaultFont);
+
+            // Detect and apply theme before creating any UI components
+            boolean isDarkTheme = isSystemDarkTheme();
+            if (isDarkTheme) {
+                if (!FlatDraculaIJTheme.setup()) {
+                    // Fallback to basic dark theme if Dracula fails
+                    FlatMacDarkLaf.setup();
                 }
-            }
-            
-            // Override for CJK languages
-            if (locale.getLanguage().matches("zh|ja|ko")) {
-                fontName = "Microsoft YaHei Light"; // Modern CJK font
-            }
-            
-            // Set the default font for all Swing components
-            Enumeration<Object> keys = UIManager.getDefaults().keys();
-            while (keys.hasMoreElements()) {
-                Object key = keys.nextElement();
-                Object value = UIManager.get(key);
-                if (value instanceof FontUIResource) {
-                    UIManager.put(key, new FontUIResource(fontName, Font.PLAIN, 12));
+            } else {
+                if (!FlatLightFlatIJTheme.setup()) {
+                    // Fallback to basic light theme if JetBrains theme fails
+                    FlatLightFlatIJTheme.setup();
                 }
             }
 
-            // Now set the Look and Feel
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            // Create and show the application window
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    _instance = new SpaceMap();
+                    // Update the UI after instance creation
+                    SwingUtilities.updateComponentTreeUI(_instance);
+                    _instance.setVisible(true);
+                    processCommandLine(args);
+                } catch (Exception ex) {
+                    ExceptionPublisher.publish(ex);
+                }
+            });
+
         } catch (Exception e1) {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
+            ExceptionPublisher.publish(e1);
         }
-
-//        try {
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        _instance = new SpaceMap();
-        _instance.setVisible(true);
-        processCommandLine(args);
     }
     
     private static void processCommandLine(String[] args) {
@@ -314,7 +302,10 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
     private JComponent createToolbar() {
         final JPanel toolbar = new JPanel(new BorderLayout());
         final JPanel basic = new JPanel(new BorderLayout(0, 0)); 
-        final JPanel scancontrols = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 1));
+        
+        // Create scan controls with no padding
+        final JPanel scancontrols = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        scancontrols.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         // Volume selector
         final JComboBox<ScanTarget> volumes = buildVolumeSelector();
@@ -336,8 +327,9 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
         });
         scancontrols.add(_startButton);
 
-        // Right controls panel
-        JPanel rightControls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 1, 1));
+        // Right controls panel with no padding
+        JPanel rightControls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        rightControls.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         
         // Unhide button
         JButton restoreButton = new JButton("Unhide");
@@ -355,15 +347,19 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
         basic.add(scancontrols, BorderLayout.WEST);
         _filterPanel = new FilterPanel();
         
-        // Wrap filter panel in a centered container
+        // Center panel with proper vertical alignment
         JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         centerPanel.setOpaque(false);
         centerPanel.add(_filterPanel);
-        basic.add(centerPanel, BorderLayout.CENTER);
         
+        basic.add(centerPanel, BorderLayout.CENTER);
         basic.add(rightControls, BorderLayout.EAST);
-        toolbar.add(basic, BorderLayout.NORTH);
-
+        
+        // Add padding to the entire toolbar
+        toolbar.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        toolbar.add(basic, BorderLayout.CENTER); // Changed from NORTH to CENTER for vertical centering
+        
         return toolbar;
     }
 
@@ -403,6 +399,30 @@ public class SpaceMap extends JFrame implements IScanningEngineObserver {
         }
 
     }
+    
+    /**
+     * Detects if the system is using a dark theme
+     * @return true if system is in dark mode, false otherwise
+     */
+    private static boolean isSystemDarkTheme() {
+        // Check Windows registry for dark mode setting
+        try {
+            Process process = Runtime.getRuntime().exec("reg query \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v AppsUseLightTheme");
+            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("AppsUseLightTheme")) {
+                    // If value is 0, system is using dark theme
+                    return line.trim().split("\\s+")[3].equals("0x0");
+                }
+            }
+        } catch (Exception e) {
+            // If we can't detect the theme, default to light theme
+            return false;
+        }
+        return false;
+    }
+
 }
 
 class TimerComplete implements IAsyncCallback {

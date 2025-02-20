@@ -48,17 +48,25 @@ public class ResourceManager {
 		}
 		try {
 			URL url = ResourceManager.class.getResource(path);
+			if (url == null) {
+				System.err.println("Warning: Resource not found: " + path);
+				return null;
+			}
 			Image image = ImageIO.read(url);
+			if (image == null) {
+				System.err.println("Warning: Failed to read image: " + path);
+				return null;
+			}
 			Image[] scaledImages = Arrays.stream(new int[] { 14, 16, 18, 20, 24, 32, 64, 128 }).mapToObj((int size) -> {
 				return image.getScaledInstance(size, size, Image.SCALE_SMOOTH);
 			}).toArray(Image[]::new);
-
 
 			ImageIcon result = new ImageIcon(new BaseMultiResolutionImage(scaledImages));
 			_IconCache.put(path, result);
 			return result;
 		} catch (Exception ex) {
-			throw new SystemFatalException(ex);
+			System.err.println("Warning: Error loading resource: " + path + " - " + ex.getMessage());
+			return null;
 		}
 	}
 

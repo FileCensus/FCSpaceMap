@@ -45,7 +45,7 @@ public class File {
         b.append(_dirRecord.getFileIdentifier()).append(" ");
         b.append(_dirRecord.getDataLength()).append(" [");
         b.append(_dirRecord.getRecordingDateTime()).append("] ");
-        b.append(String.format(" <<0x%X-0x%X>>", new Object[] {new Integer(_dirRecord.getLocationOfExtent() * 2048), new Integer((_dirRecord.getLocationOfExtent() * 2048) + _dirRecord.getDataLength())} ));
+        b.append(String.format(" <<0x%X-0x%X>>", Integer.valueOf(_dirRecord.getLocationOfExtent() * 2048), Integer.valueOf((_dirRecord.getLocationOfExtent() * 2048) + _dirRecord.getDataLength())));
         
         return b.toString();
     }
